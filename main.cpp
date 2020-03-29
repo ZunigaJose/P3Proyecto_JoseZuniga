@@ -106,7 +106,7 @@ void terminal() {
         break;
         case 4:
             //cd/
-            
+            dir.cdBack();
         break;
         case 5:
             //del

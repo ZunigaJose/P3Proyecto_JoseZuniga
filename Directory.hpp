@@ -15,5 +15,6 @@ class Directory {
     //~Directory();
     void ls(short);
     void getPrePath();
+    void cdBack();
     void cd(string);
 };

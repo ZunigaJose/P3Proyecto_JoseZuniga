@@ -50,22 +50,19 @@ void Directory::cd(string line) {
     }
 }
 
+void Directory::cdBack() {
+    if (atributo.path != getenv("HOME")) {
+        getPrePath();
+    } else {
+        printw("No se puede regresar mas!\n");
+    }
+}
+
 void Directory::getPrePath() {
-    string temp = "";
-    string newPath;
-    int slashes = 0;
-    for (int i = 0; i < atributo.path.size(); i++) {
-        if(atributo.path.at(i) == '/'){
-            slashes++;
-        }
-    }
-    for (int i = 0; i < atributo.path.size(); i++) {
-        if (atributo.path.at(i) !=  '/') {
-            temp += atributo.path.at(i);
-        } else {
-            temp = "";
-        }
-    }
+    string newPath = "";
+    newPath = atributo.path;
+    newPath = newPath.substr(0, newPath.find_last_of("/\\"));
+    atributo.path = newPath;
 }
 
 /*Directory::~Directory() {
