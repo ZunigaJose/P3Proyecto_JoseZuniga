@@ -110,9 +110,17 @@ void terminal() {
         break;
         case 5:
             //del
+            if (validarParametro(line)) {
+                input2 = getInput(line, 1);
+                dir.del(input2);
+            }
         break;
         case 6:
             //mkdir
+            if (validarParametro(line)) {
+                input2 = getInput(line, 1);
+                dir.mDir(input2);
+            }
         break;
         case 7:
             //file
@@ -120,7 +128,6 @@ void terminal() {
         case 8:
             //write
         break;
-
         case 9:
             //read
         break;

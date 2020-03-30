@@ -1,7 +1,19 @@
 #include "Directory.hpp"
 #include "Atributos.hpp"
 #include <ncurses.h>
+#include <sys/stat.h>
+#include <fstream>
+#include <iostream>
 using namespace std;
+
+bool Directory::isDeleted(string folder) {
+    for (int i = 0; i < deleted.size(); i++) {
+        if (deleted[i] == folder) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void Directory::ls(short color) {
     DIR *dir;
@@ -11,7 +23,7 @@ void Directory::ls(short color) {
     if ((dir = opendir(atributo.path.c_str())) != NULL) {
         while ((file = readdir(dir)) != NULL) {
             name = file->d_name;
-            if (name.at(0) != '.') {
+            if (name.at(0) != '.' && !isDeleted(name)) {
                 files.push_back(file);
             }
         }
@@ -43,7 +55,7 @@ void Directory::ls(short color) {
 
 void Directory::cd(string line) {
     DIR *dir;
-    if ((dir = opendir((atributo.path + '/' +line).c_str())) != NULL) {
+    if ((dir = opendir((atributo.path + '/' +line).c_str())) != NULL && !isDeleted(line)) {
         atributo.path = atributo.path + '/' + line;
     } else {
         printw("Carpeta ingresada no existe!!\n");
@@ -65,9 +77,64 @@ void Directory::getPrePath() {
     atributo.path = newPath;
 }
 
+void Directory::mDir(string folder) {
+    DIR *dir;
+    const int dir_err = mkdir((atributo.path + "/" + folder).c_str(), S_IRUSR | S_IWUSR);
+    if (dir_err == - 1) {
+    printw("Error creando el directorio!\n");
+    }
+}
+
 /*Directory::~Directory() {
     clearVect();
 }*/
+
+void Directory::del(string line) {
+    DIR *dir;
+    if ((dir = opendir((atributo.path + '/' + line).c_str())) != NULL) {
+        fstream archivo;
+        archivo.open("Deleted.txt", ios::app);
+        if (!archivo) {
+            archivo.open("Deleted.txt", ios::trunc | ios::out);
+            archivo.close();
+            archivo.open("Atributos.txt", ios::app);
+        }
+        archivo << line << ';';
+        deleted.push_back(line);
+    }
+}
+
+int count(string line) {
+    int count = 0;
+    for (int i = 0; i < line.size(); i++) {
+        if (line.at(i) == ';') {
+            count++;
+        }
+    }
+    return count;
+}
+
+void Directory::leerDel() {
+    fstream archivo;
+    archivo.open("Deleted.txt", ios::in);
+    string line;
+    if (archivo) {
+        getline(archivo, line);
+        int n = 0;
+        int tot = count(line);
+        string token[tot];
+        for (int i = 0; i < line.size(); i++) {
+            if (line.at(i) == ';') {
+                n++;
+            } else {
+                token[n] += line.at(i);
+            }
+        }
+        for (int i = 0; i < tot; i++) {
+            deleted.push_back(token[i]);
+        }
+    }
+}
 
 void Directory::clearVect() {
     for (dirent *p : files) {
