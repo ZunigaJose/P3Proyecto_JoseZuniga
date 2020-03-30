@@ -34,8 +34,22 @@ int getCommand(string input) {
     return -1;
 }
 
-bool validarParametro(string linea) {
-    string str = getInput(linea, 1);
+bool validartxt(string input) {
+    string end = "";
+    end += input.at(input.size() - 4);
+    end += input.at(input.size() - 3);
+    end += input.at(input.size() - 2);
+    end += input.at(input.size() - 1);
+    if (end == ".txt"){ 
+        return true;
+    } else {
+        printw("Debe de ser un archivo .txt!!\n");
+        return false;
+    }
+}
+
+bool validarParametro(string linea, int x = 1) {
+    string str = getInput(linea, x);
     if (str != "") {
         return true;
     } else {
@@ -81,7 +95,7 @@ void terminal() {
     int op;
     atributos.print(backdground);
     char line[80];
-    string input2;
+    string input2, input3;
     do {
         getstr(line);
         op = getCommand(getInput(line));
@@ -124,9 +138,27 @@ void terminal() {
         break;
         case 7:
             //file
+            if (validarParametro(line)) {
+                input2 = getInput(line, 1);
+                if (validartxt(input2)) {
+                    dir.mkFile(input2);
+                }
+            }
+        break;
         break;
         case 8:
             //write
+            if (validarParametro(line)) {
+                input2 = getInput(line, 1);
+                if (validartxt(input2)) {
+                    if (validarParametro(line, 2)) {
+                       input3 = getInput(line, 2);
+                       dir.write(input2, input3);
+                    } else {
+                        printw("Debe de ingresar la palabra a escribir!");
+                    }
+                }
+            }
         break;
         case 9:
             //read

@@ -114,6 +114,23 @@ int count(string line) {
     return count;
 }
 
+void Directory::write(string file, string word) {
+    fstream archivo;
+    archivo.open(atributo.path + '/' + file, ios::app);
+    if(!archivo) {
+        printw("No se pudo abrir el archivo!\n");
+    } else {
+        archivo << word << ' ';
+    }
+    archivo.close();
+}
+
+void Directory::mkFile(string file) {
+    fstream arhivo;
+    arhivo.open(atributo.path + '/' + file, ios::trunc | ios::out);
+    arhivo.close();
+}
+
 void Directory::leerDel() {
     fstream archivo;
     archivo.open("Deleted.txt", ios::in);
@@ -134,6 +151,7 @@ void Directory::leerDel() {
             deleted.push_back(token[i]);
         }
     }
+    archivo.close();
 }
 
 void Directory::clearVect() {

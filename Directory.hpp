@@ -22,4 +22,6 @@ class Directory {
     void del(string);
     bool isDeleted(string);
     void leerDel();
+    void write(string, string);
+    void mkFile(string);
 };
