@@ -79,7 +79,7 @@ void Directory::getPrePath() {
 
 void Directory::mDir(string folder) {
     DIR *dir;
-    const int dir_err = mkdir((atributo.path + "/" + folder).c_str(), S_IRUSR | S_IWUSR);
+    const int dir_err = mkdir((atributo.path + "/" + folder).c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
     if (dir_err == - 1) {
     printw("Error creando el directorio!\n");
     }
@@ -101,6 +101,7 @@ void Directory::del(string line) {
         }
         archivo << line << ';';
         deleted.push_back(line);
+        archivo.close();
     }
 }
 
@@ -112,6 +113,21 @@ int count(string line) {
         }
     }
     return count;
+}
+
+void Directory::read(string file) {
+    fstream archivo;
+    archivo.open(atributo.path + '/' + file, ios::in);
+    if(!archivo) {
+        printw("No se pudo abrir el archivo!\n");
+    } else {
+        string line;
+        while (getline(archivo, line)) {
+            printw(line.c_str());
+        }
+        printw("\n");
+    }
+    archivo.close();
 }
 
 void Directory::write(string file, string word) {

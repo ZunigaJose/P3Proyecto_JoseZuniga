@@ -162,6 +162,12 @@ void terminal() {
         break;
         case 9:
             //read
+            if (validarParametro(line)) {
+                input2 = getInput(line, 1);
+                if (validartxt(input2)) {
+                    dir.read(input2);
+                }
+            }
         break;
         case 10:
             if (validarParametro(line)) {
